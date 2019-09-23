@@ -1,10 +1,10 @@
 import io.xjar.XEntryFilter;
 import io.xjar.XKit;
 import io.xjar.boot.XBoot;
+import io.xjar.filter.XAnyEntryFilter;
 import io.xjar.jar.XJarAntEntryFilter;
 import io.xjar.key.XKey;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -26,27 +26,22 @@ public class XjarUtil {
         String password = param.getPassword();
         String srcJar = param.getSrcJarName();
         String destJar = param.getDestJarName();
-
-
-        XEntryFilter not;
-
-        // 组装需要过滤的资源
-        if (param.getExcludedResourceList() != null && param.getExcludedResourceList().size() > 0) {
-            for (String item: param.getExcludedResourceList()) {
-                XKit.not(
-                    XKit.or().mix(new XJarAntEntryFilter(item))
-                );
-            }
-        }
+        XEntryFilter not =  XKit.not(populateEntryFilter(param.getExcludedResourceList()));
         XKey xKey = XKit.key(password);
-        XBoot.encrypt(srcJar, destJar, xKey);
-
+        // 执行加密
+        XBoot.encrypt(srcJar, destJar, xKey, not);
 
         return true;
     }
 
 
-    private XEntryFilter populateEntryFilter(List<String> excludedFilters) {
-        if ()
+    private static XEntryFilter populateEntryFilter(List<String> excludedFilters) {
+        XEntryFilter notFilter = XKit.or();
+
+        for (String item : excludedFilters) {
+            notFilter = ((XAnyEntryFilter) notFilter).mix(new XJarAntEntryFilter(item));
+        }
+
+        return notFilter;
     }
 }

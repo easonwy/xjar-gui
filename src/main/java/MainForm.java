@@ -1,4 +1,8 @@
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * @author ewu
@@ -19,6 +23,24 @@ public class MainForm {
 
     public MainForm() {
 
+        // http://c.biancheng.net/view/1252.html
+        btnBrowserSrc.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser srcBrowse = new JFileChooser();
+                FileFilter filter = new FileNameExtensionFilter("Jar file", "jar");
+                fileopen.addChoosableFileFilter(filter);
+
+                // get Selected File
+                if (ret == JFileChooser.APPROVE_OPTION) {
+                    lblResult.setText(fileopen.getSelectedFile().toString());
+                }
+            }
+        });
+        btnBrowseDest.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
     }
 
 
