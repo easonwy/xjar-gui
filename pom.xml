@@ -16,16 +16,38 @@
             <artifactId>xjar</artifactId>
             <version>v2.0.6</version>
         </dependency>
+
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>4.5.11</version>
+        </dependency>
+
     </dependencies>
 
 
-    <!-- 设置 jitpack.io 仓库 -->
+    <!-- 设置 jitpack.io 仓库 -->ye@he
     <repositories>
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
     </repositories>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <!-- 需要将executable和embeddedLaunchScript参数删除，目前还不能支持对该模式Jar的加密！后面将会支持该方式的打包。
+                <configuration>
+                    <executable>true</executable>
+                    <embeddedLaunchScript>...</embeddedLaunchScript>
+                </configuration>
+                -->
+            </plugin>
+        </plugins>
+    </build>
 
 
 </project>

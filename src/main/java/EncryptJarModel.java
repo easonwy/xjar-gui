@@ -6,6 +6,10 @@ import java.util.List;
  **/
 public class EncryptJarModel {
 
+    /**
+     * 类型, Spring Boot Jar, Normal Jar
+     */
+    private String jarType;
 
     /**
      *
@@ -73,4 +77,11 @@ public class EncryptJarModel {
     }
 
 
+    public String getJarType() {
+        return jarType;
+    }
+
+    public void setJarType(String jarType) {
+        this.jarType = jarType;
+    }
 }

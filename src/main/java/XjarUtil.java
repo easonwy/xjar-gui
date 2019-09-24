@@ -1,10 +1,15 @@
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.StrUtil;
 import io.xjar.XEntryFilter;
 import io.xjar.XKit;
 import io.xjar.boot.XBoot;
 import io.xjar.filter.XAnyEntryFilter;
+import io.xjar.jar.XJar;
 import io.xjar.jar.XJarAntEntryFilter;
 import io.xjar.key.XKey;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,6 +20,8 @@ import java.util.List;
  **/
 public class XjarUtil {
 
+    private static final String BOOT_JAR = "Spring Boot Jar";
+
     /**
      * 加密Jar包
      *
@@ -23,25 +30,83 @@ public class XjarUtil {
      * @throws Exception
      */
     public static Boolean encryptJar(EncryptJarModel param) throws Exception {
-        String password = param.getPassword();
-        String srcJar = param.getSrcJarName();
-        String destJar = param.getDestJarName();
-        XEntryFilter not =  XKit.not(populateEntryFilter(param.getExcludedResourceList()));
-        XKey xKey = XKit.key(password);
-        // 执行加密
-        XBoot.encrypt(srcJar, destJar, xKey, not);
+        String jarType = param.getJarType();
+        if (StrUtil.isBlank(jarType)) {
+            jarType = BOOT_JAR;
+        }
+
+        XKey xKey = XKit.key(param.getPassword());
+
+        XEntryFilter not = null;
+        if (CollectionUtil.isNotEmpty(param.getExcludedResourceList())) {
+            not  = populateEntryFilter(param.getExcludedResourceList());
+        }
+        if (BOOT_JAR.equalsIgnoreCase(jarType)) {
+            // 执行加密
+            XBoot.encrypt(param.getSrcJarName(), param.getDestJarName(), xKey, not);
+            if (param.getGenerateKey()) {
+                String keyFileName = param.getDestJarName().substring(0, param.getDestJarName().lastIndexOf(".")) +".key";
+                writeKeyFile(param.getPassword(), keyFileName);
+            }
+
+        } else {
+            XJar.encrypt(param.getSrcJarName(), param.getDestJarName(), xKey, not);
+        }
 
         return true;
     }
 
 
-    private static XEntryFilter populateEntryFilter(List<String> excludedFilters) {
-        XEntryFilter notFilter = XKit.or();
-
-        for (String item : excludedFilters) {
-            notFilter = ((XAnyEntryFilter) notFilter).mix(new XJarAntEntryFilter(item));
+    /**
+     * 解密Jar包
+     *
+     * @param param 参数
+     * @return 返回操作结果
+     * @throws Exception
+     */
+    public static Boolean decryptJar(EncryptJarModel param) throws Exception {
+        String jarType = param.getJarType();
+        if (StrUtil.isBlank(jarType)) {
+            jarType = BOOT_JAR;
         }
 
-        return notFilter;
+        XKey xKey = XKit.key(param.getPassword());
+        XEntryFilter not = null;
+        if (CollectionUtil.isNotEmpty(param.getExcludedResourceList())) {
+            not  = populateEntryFilter(param.getExcludedResourceList());
+        }
+
+        if (BOOT_JAR.equalsIgnoreCase(jarType)) {
+            // 执行加密
+            XBoot.decrypt(param.getSrcJarName(), param.getDestJarName(), xKey, not);
+        } else {
+            // 执行加密
+            XJar.decrypt(param.getSrcJarName(), param.getDestJarName(), xKey, not);
+        }
+
+        return true;
+    }
+
+    public static void writeKeyFile(String password, String keyFilePath) {
+         List<String> keyFileList = new ArrayList<String>();
+         keyFileList.add("password: " + password);
+         keyFileList.add("hold: true");
+
+         FileUtil.writeUtf8Lines(keyFileList, keyFilePath);
+    }
+
+    /**
+     * 生成过滤条件
+     *
+     * @param excludedFilters
+     * @return
+     */
+    private static XEntryFilter populateEntryFilter(List<String> excludedFilters) {
+        XAnyEntryFilter orFilter = XKit.or();
+        for (String item : excludedFilters) {
+            orFilter = orFilter.mix(new XJarAntEntryFilter(item));
+        }
+
+        return XKit.not(orFilter);
     }
 }
