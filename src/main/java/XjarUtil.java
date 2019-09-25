@@ -9,6 +9,9 @@ import io.xjar.jar.XJar;
 import io.xjar.jar.XJarAntEntryFilter;
 import io.xjar.key.XKey;
 
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +51,6 @@ public class XjarUtil {
                 String keyFileName = param.getDestJarName().substring(0, param.getDestJarName().lastIndexOf(".")) +".key";
                 writeKeyFile(param.getPassword(), keyFileName);
             }
-
         } else {
             XJar.encrypt(param.getSrcJarName(), param.getDestJarName(), xKey, not);
         }
@@ -108,5 +110,13 @@ public class XjarUtil {
         }
 
         return XKit.not(orFilter);
+    }
+
+    public static void openFolder(String filePath) {
+        try {
+            Desktop.getDesktop().open(new File(filePath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

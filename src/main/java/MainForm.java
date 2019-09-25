@@ -1,3 +1,4 @@
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.util.StrUtil;
 
@@ -116,6 +117,7 @@ public class MainForm {
                     Boolean encryptResult = XjarUtil.encryptJar(param);
                     if (encryptResult) {
                         JOptionPane.showMessageDialog(null, "encrypt done");
+                        XjarUtil.openFolder(FileUtil.getParent(param.getDestJarName(), 1));
                     } else {
                         JOptionPane.showMessageDialog(null, "encrypt fail");
                     }
@@ -181,6 +183,7 @@ public class MainForm {
                     Boolean encryptResult = XjarUtil.decryptJar(param);
                     if (encryptResult) {
                         JOptionPane.showMessageDialog(null, "encrypt done");
+                        XjarUtil.openFolder(FileUtil.getParent(param.getDestJarName(), 1));
                     } else {
                         JOptionPane.showMessageDialog(null, "encrypt fail");
                     }
