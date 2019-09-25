@@ -29,6 +29,7 @@ public class MainForm {
     private JPanel root;
     private JButton btnDecrypt;
     private JComboBox cbxJarType;
+    private JTextPane txtCmdExample;
 
     private final int MAX = 100;
 
