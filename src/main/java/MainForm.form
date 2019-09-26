@@ -100,7 +100,7 @@
                 </constraints>
                 <properties>
                   <font style="1"/>
-                  <text value="static/**&#10;META-INF/resources/**&#10;application.yml"/>
+                  <text value="static/**&#10;META-INF/resources/**&#10;*.yml&#10;*.properties"/>
                 </properties>
               </component>
               <component id="92e54" class="javax.swing.JButton" binding="btnBrowserSrc">
