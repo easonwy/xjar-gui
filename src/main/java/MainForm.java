@@ -1,5 +1,6 @@
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 
 import javax.swing.*;
@@ -10,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * @author ewu
@@ -30,23 +32,26 @@ public class MainForm {
     private JButton btnDecrypt;
     private JComboBox cbxJarType;
     private JTextPane txtCmdExample;
+    private JButton btnGeneratePass;
 
     private final int MAX = 100;
 
     public MainForm() {
 
-        // http://c.biancheng.net/view/1252.html
         btnBrowserSrc.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JFileChooser srcBrowse = new JFileChooser();
                 FileFilter filter = new FileNameExtensionFilter("Jar File", "jar");
                 srcBrowse.setDialogTitle("Choose Jar file");
                 srcBrowse.setFileFilter(filter);
-                int val=srcBrowse.showOpenDialog(null);    //文件打开对话框
+                int val = srcBrowse.showOpenDialog(null);
                 if (val == JFileChooser.APPROVE_OPTION) {
                     txtSrcJarPath.setText(srcBrowse.getSelectedFile().getAbsolutePath());
-                    if(StrUtil.isBlank(txtDestJarPath.getText())) {
-                        txtDestJarPath.setText(srcBrowse.getSelectedFile().getAbsolutePath());
+                    if (StrUtil.isBlank(txtDestJarPath.getText())) {
+                        String newFilePath = srcBrowse.getSelectedFile().getAbsolutePath();
+                        newFilePath = newFilePath.substring(0, newFilePath.lastIndexOf(".jar"));
+                        newFilePath = newFilePath + "_encrypt_" + RandomUtil.randomNumbers(4) + ".jar";
+                        txtDestJarPath.setText(newFilePath);
                     }
                 }
             }
@@ -58,7 +63,7 @@ public class MainForm {
                 FileFilter filter = new FileNameExtensionFilter("Jar File", "jar");
                 destBrowse.setDialogTitle("Choose Jar file");
                 destBrowse.setFileFilter(filter);
-                int val=destBrowse.showOpenDialog(null);    //文件打开对话框
+                int val = destBrowse.showOpenDialog(null);
                 if (val == JFileChooser.APPROVE_OPTION) {
                     txtDestJarPath.setText(destBrowse.getSelectedFile().getAbsolutePath());
                 }
@@ -80,7 +85,7 @@ public class MainForm {
                 if (StrUtil.isNotBlank(excludedFilters)) {
                     String[] lines = excludedFilters.split("\\n");
                     if (lines != null && lines.length > 0) {
-                        for (String line: lines) {
+                        for (String line : lines) {
                             filterList.add(line);
                         }
                     }
@@ -142,7 +147,7 @@ public class MainForm {
                 if (StrUtil.isNotBlank(excludedFilters)) {
                     String[] lines = excludedFilters.split("\\\\n");
                     if (lines != null && lines.length > 0) {
-                        for (String line: lines) {
+                        for (String line : lines) {
                             filterList.add(line);
                         }
                     }
@@ -193,10 +198,16 @@ public class MainForm {
                 }
             }
         });
+        btnGeneratePass.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                txtPassword.setText(RandomUtil.randomStringUpper(10));
+            }
+        });
     }
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame("XJar加解密GUI工具");
+        JFrame frame = new JFrame("XJar加解密GUI");
         JPanel rootPanel = new MainForm().root;
         frame.setContentPane(rootPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -205,7 +216,7 @@ public class MainForm {
         URL iconUrl = ResourceUtil.getResource("main.png");
         ImageIcon img = new ImageIcon(iconUrl);
 
-        frame.setSize(800, 500);
+        frame.setSize(850, 500);
         frame.setLocationRelativeTo(rootPanel);
         frame.setResizable(false);
 
