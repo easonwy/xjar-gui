@@ -14,13 +14,13 @@
         <dependency>
             <groupId>com.github.core-lib</groupId>
             <artifactId>xjar</artifactId>
-            <version>v2.0.6</version>
+            <version>4.0.1</version>
         </dependency>
 
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
-            <version>4.5.11</version>
+            <version>5.3.6</version>
         </dependency>
 
     </dependencies>
