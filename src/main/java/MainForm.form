@@ -100,7 +100,7 @@
                 </constraints>
                 <properties>
                   <font style="1"/>
-                  <text value="static/**&#10;META-INF/resources/**&#10;*.yml&#10;*.properties&#10;*.xml&#10;*.lic&#10;*.keystore&#10;*.p12&#10;*.pem"/>
+                  <text resource-bundle="config" key="EXCLUES_FILES"/>
                 </properties>
               </component>
               <component id="92e54" class="javax.swing.JButton" binding="btnBrowserSrc">
