@@ -16,6 +16,11 @@
 
 ## 安装与运行
 
+### 项目地址
+
+- Gitee: https://gitee.com/ew5/xjar-gui
+- Github: https://github.com/easonwy/xjar-gui
+
 ### 前提条件
 
 - Java Development Kit (JDK) 8 或更高版本。
